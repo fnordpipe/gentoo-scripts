@@ -16,7 +16,7 @@ done
 test -z "${rootfs}" && rootfs=$(mktemp -d)
 
 if [ -n "${dev}" ]; then
-  curl -sL http://distfiles.fnordpipe.org/gentoo/releases/amd64/autobuilds/latest/hardened/stage3-amd64-hardened.tar.bz2 | tar xjpf - -C ${rootfs}
+  curl -sL http://distfiles.fnordpipe.org/overlay/releases/amd64/autobuilds/latest/headless/stage3-amd64-headless.tar.bz2 | tar xjpf - -C ${rootfs}
   install -d -m 0700 ${rootfs}/root/.ssh
   test -f /root/.ssh/authorized_keys && install -m 0600 /root/.ssh/authorized_keys ${rootfs}/root/.ssh/authorized_keys
 
