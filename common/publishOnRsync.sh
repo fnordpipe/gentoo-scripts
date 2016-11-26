@@ -15,12 +15,14 @@ ssh -l ${rsyncUser} ${rsyncHost} " \
   mkdir -p \
     ~/fnordpipe-portage/${BN} \
     ~/gentoo-portage/${BN} \
-  "
+"
 
 echo "publish portage tree..."
 cat ./deploy/overlay-portage.tar.bz2 | \
   ssh -l ${rsyncUser} ${rsyncHost} " \
-    tar xjf - --no-same-owner --no-same-permissions --strip-components=1 -C ~/fnordpipe-portage/${BN} \
+    tar xjf - --no-same-owner --no-same-permissions --strip-components=1 -C ~/fnordpipe-portage/${BN} && \
+    date > ~/fnordpipe-portage/${BN}/metadata/timestamp && \
+    date +'%a, %d %b %Y %T %z' > ~/fnordpipe-portage/${BN}/metadata/timestamp.chk \
   "
 
 cat ./deploy/gentoo-portage.tar.bz2 | \
