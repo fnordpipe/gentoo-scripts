@@ -2,7 +2,8 @@
 
 set -e
 
-source /etc/rsyncPublish.cfg
+test -f /etc/rsyncPublish.cfg &&
+  source /etc/rsyncPublish.cfg
 
 BN=${BUILDNUMBER:-$(date +"%s")}
 

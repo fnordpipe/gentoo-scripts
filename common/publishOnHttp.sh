@@ -2,7 +2,8 @@
 
 set -e
 
-source /etc/httpPublish.cfg
+test -f /etc/httpPublish.cfg &&
+  source /etc/httpPublish.cfg
 
 BN=${BUILDNUMBER:-$(date +"%s")}
 
