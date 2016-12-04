@@ -35,8 +35,14 @@ if [ -n "${dev}" ]; then
   ln -snf /etc/init.d/net.${iface} ${rootfs}/etc/runlevels/default/net.${iface}
   ln -snf /etc/init.d/sshd ${rootfs}/etc/runlevels/default/sshd
 
+  mount -t proc none ${rootfs}/proc
+  mount -t sysfs none ${rootfs}/sys
+  mount -t devtmpfs none ${rootfs}/dev
+
   chroot ${rootfs} /env.sh emerge --sync
   chroot ${rootfs} /env.sh emerge -qg net-misc/bridge-utils
+
+  umount ${rootfs}/dev ${rootfs}/sys ${rootfs}/proc
 
   # dear future-self, fix the fucking kernel issue
   cp -rp /lib/modules ${rootfs}/lib/
