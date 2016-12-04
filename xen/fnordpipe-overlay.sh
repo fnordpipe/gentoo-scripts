@@ -39,14 +39,16 @@ if [ -n "${dev}" ]; then
   mount -t sysfs none ${rootfs}/sys
   mount -t devtmpfs none ${rootfs}/dev
 
+  # dear future-self, fix the fucking kernel issue
+  rm ${rootfs}/usr/src/linux
+  cp -Lrp /usr/src/linux ${rootfs}/usr/src
+  cp -rp /lib/modules ${rootfs}/lib/
+  cp -rp /lib/firmware ${rootfs}/lib/
+
   chroot ${rootfs} /env.sh emerge --sync
   chroot ${rootfs} /env.sh emerge -qg net-misc/bridge-utils
 
   umount ${rootfs}/dev ${rootfs}/sys ${rootfs}/proc
-
-  # dear future-self, fix the fucking kernel issue
-  cp -rp /lib/modules ${rootfs}/lib/
-  cp -rp /lib/firmware ${rootfs}/lib/
 
   rm -f ${rootfs}/env.sh
 
