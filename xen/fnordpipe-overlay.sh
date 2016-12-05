@@ -56,8 +56,6 @@ EOF
   mount -t devtmpfs none ${rootfs}/dev
 
   # dear future-self, fix the fucking kernel issue
-  rm ${rootfs}/usr/src/linux
-  cp -Lrp /usr/src/linux ${rootfs}/usr/src
   cp -rp /lib/modules ${rootfs}/lib/
   cp -rp /lib/firmware ${rootfs}/lib/
 
