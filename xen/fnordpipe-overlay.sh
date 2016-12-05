@@ -8,7 +8,8 @@ while true; do
   case "${1}" in
     --hostname*) name=${1/--hostname=}; shift 1;;
     --dev*)   dev=${1/--dev=}; shift 1;;
-    --iface*) iface=${1/--iface=} shift 1;;
+    --iface*) iface=${1/--iface=}; shift 1;;
+    --bridge*) bridge=${1/--bridge=}; shift 1;;
     --)       shift 1; break;;
     *)        break;;
   esac
@@ -26,13 +27,28 @@ if [ -n "${dev}" ]; then
   install -d -m 0700 ${rootfs}/root/.ssh
   test -f /root/.ssh/authorized_keys && install -m 0600 /root/.ssh/authorized_keys ${rootfs}/root/.ssh/authorized_keys
 
-  echo "config_${iface}=\"dhcp\"" > ${rootfs}/etc/conf.d/net
+  if [ -z "${bridge}" ]; then
+    echo "config_${iface}=\"dhcp\"" > ${rootfs}/etc/conf.d/net
+    ln -snf net.lo ${rootfs}/etc/init.d/net.${iface}
+    ln -snf /etc/init.d/net.${iface} ${rootfs}/etc/runlevels/default/net.${iface}
+  else
+    echo "config_${bridge}=\"dhcp\"" > ${rootfs}/etc/conf.d/net
+    echo "bridge_${bridge}=\"${iface}\"" >> ${rootfs}/etc/conf.d/net
+    cat >> ${rootfs}/etc/conf.d/net <<EOF
+brctl_${bridge}="
+  setfd 0
+  sethello 10
+  stp off
+"
+EOF
+    ln -snf net.lo ${rootfs}/etc/init.d/net.${bridge}
+    ln -snf /etc/init.d/net.${bridge} ${rootfs}/etc/runlevels/default/net.${bridge}
+  fi
+
   echo "hostname=\"${name}\"" > ${rootfs}/etc/conf.d/hostname
   echo "127.0.0.1 ${name} localhost" > ${rootfs}/etc/hosts
   sed -i '/^c1:12345.*/i c0:2345:respawn:/sbin/agetty 38400 hvc0 linux' ${rootfs}/etc/inittab
 
-  ln -snf net.lo ${rootfs}/etc/init.d/net.${iface}
-  ln -snf /etc/init.d/net.${iface} ${rootfs}/etc/runlevels/default/net.${iface}
   ln -snf /etc/init.d/sshd ${rootfs}/etc/runlevels/default/sshd
 
   mount -t proc none ${rootfs}/proc
