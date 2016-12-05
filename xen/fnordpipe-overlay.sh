@@ -18,6 +18,9 @@ done
 test -z "${rootfs}" && rootfs=$(mktemp -d)
 
 if [ -n "${dev}" ]; then
+  mkfs.ext4 -F ${dev}
+  mount ${dev} ${rootfs}
+
   curl -sL http://distfiles.fnordpipe.org/fnordpipe/releases/amd64/autobuilds/latest/headless/stage3-amd64-headless.tar.bz2 | tar xjpf - -C ${rootfs}
 
   curl -sL http://git.fnordpipe.org/gentoo/fnordpipe-overlay.git/plain/metadata/repos.conf > ${rootfs}/etc/portage/repos.conf/fnordpipe.conf
@@ -65,7 +68,7 @@ EOF
   umount ${rootfs}/dev ${rootfs}/sys ${rootfs}/proc
 
   rm -f ${rootfs}/env.sh
-
-  mkfs.ext4 -F ${dev} -d ${rootfs}
-  rm -rf ${rootfs}
+  umount ${rootfs}
 fi
+
+rm -rf ${rootfs}
