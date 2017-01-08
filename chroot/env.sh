@@ -10,4 +10,9 @@ fi
 env-update
 source /etc/profile
 
+unset MAKEFLAGS
+unset MAKELEVEL
+unset MAKE_TERMOUT
+unset MAKE_TERMERR
+
 ${@}
