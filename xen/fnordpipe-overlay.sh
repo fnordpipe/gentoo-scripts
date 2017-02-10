@@ -24,7 +24,7 @@ if [ -n "${dev}" ]; then
   curl -sL http://distfiles.fnordpipe.org/fnordpipe/releases/amd64/autobuilds/latest/headless/stage3-amd64-headless.tar.bz2 | tar xjpf - -C ${rootfs}
 
   curl -sL http://git.fnordpipe.org/gentoo/fnordpipe-overlay.git/plain/metadata/repos.conf > ${rootfs}/etc/portage/repos.conf/fnordpipe.conf
-  curl -sL http://git.fnordpipe.org/gentoo/scripts.git/plain/chroot/env.sh > ${rootfs}/env.sh
+  curl -sL http://git.fnordpipe.org/generic/scripts.git/plain/chroot/env.sh > ${rootfs}/env.sh
   chmod 0744 ${rootfs}/env.sh
 
   install -d -m 0700 ${rootfs}/root/.ssh
